@@ -42,7 +42,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build]
+          keys: build-frontend
       - run:
           name: Build front-end
           working_directory: ./frontend
@@ -52,8 +52,8 @@ jobs:
             npm run build
             pwd && ls -al
       - save_cache:
-          paths: [frontend/node_modules]
-          key: frontend-build
+          paths: frontend/node_modules
+          key: build-frontend
 
   build-backend:
     docker:
@@ -61,7 +61,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: build-backend
       - run:
           name: Back-end build
           working_directory: ./backend
@@ -77,8 +77,8 @@ jobs:
             - project/backend/dist
             - project/backend/node_modules
       - save_cache:
-          paths: [backend/node_modules]
-          key: backend-build
+          paths: backend/node_modules
+          key: build-backend
 
   test-frontend:
     docker:
