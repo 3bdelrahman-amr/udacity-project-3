@@ -24,7 +24,7 @@ commands:
       workflow_id:
         type: string
     steps:
-     - run:
+      - run:
           name: Reverting migrations
           when: on_fail
           command: |
@@ -34,7 +34,6 @@ commands:
               npm install
               npm run migrations:revert
             fi
-            
 
 jobs:
   build-frontend:
@@ -82,25 +81,25 @@ jobs:
           key: backend-build
 
   test-frontend:
-   docker:
+    docker:
       - image: circleci/node:13.8.0
-   steps:
+    steps:
       # Checkout code from git
       # Restore from cache
       # Your job code here
-    - checkout
-    - restore_cache:
-        keys: [frontend-build] 
-    - run:
-       name: test-frontend
-       working_directory: ./frontend
-       command: |
-         npm i
-         npm run test
+      - checkout
+      - restore_cache:
+          keys: [frontend-build]
+      - run:
+          name: test-frontend
+          working_directory: ./frontend
+          command: |
+            npm i
+            npm run test
 
   test-backend:
     docker:
-       - image: circleci/node:13.8.0
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -140,14 +139,14 @@ jobs:
             npm audit --audit-level=critical
   deploy-infrastructure:
     docker:
-     - image: amazon/aws-cli
+      - image: amazon/aws-cli
     steps:
-     - checkout
-     - run:
+      - checkout
+      - run:
           name: Install tar utility
           command: |
             yum install -y tar gzip
-     - run:
+      - run:
           name: Ensure back-end infrastructure exists
           command: |
             aws cloudformation deploy \
@@ -155,7 +154,7 @@ jobs:
             --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
             --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7} \
             --tags project=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
-     - run:
+      - run:
           name: Ensure front-end infrastructure exist
           command: |
             aws cloudformation deploy \
@@ -163,7 +162,7 @@ jobs:
             --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} \
             --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7} \
             --tags project=udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
-     - run:
+      - run:
           name: Add back-end ip to ansible inventory
           command: |
             aws ec2 describe-instances \
@@ -171,13 +170,13 @@ jobs:
             --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --output text >> ~/project/.circleci/ansible/inventory.txt
             cat ~/project/.circleci/ansible/inventory.txt
-     - persist_to_workspace:
+      - persist_to_workspace:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-     - destroy-environment:
-          workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}' 
-      # Here's where you will add some code to rollback on failure
+      - destroy-environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+        # Here's where you will add some code to rollback on failure
 
   configure-infrastructure:
     docker:
@@ -260,9 +259,9 @@ jobs:
       - run:
           name: Get backend url
           command: |
-             BACKEND_IP=$(aws cloudformation describe-stacks --stack-name udapeople-backend-"${CIRCLE_WORKFLOW_ID:0:7}" --query "Stacks[0].Outputs[0].OutputValue" --output text)
-             API_URL="http://${BACKEND_IP}:3030"
-             echo "API_URL=${API_URL}" >> frontend/.env
+            BACKEND_IP=$(aws cloudformation describe-stacks --stack-name udapeople-backend-"${CIRCLE_WORKFLOW_ID:0:7}" --query "Stacks[0].Outputs[0].OutputValue" --output text)
+            API_URL="http://${BACKEND_IP}:3030"
+            echo "API_URL=${API_URL}" >> frontend/.env
       - run:
           name: Deploy frontend objects
           working_directory: ./frontend
@@ -271,7 +270,6 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
-    
 
   deploy-backend:
     docker:
@@ -286,12 +284,12 @@ jobs:
           TYPEORM_PASSWORD: $TYPEORM_PASSWORD
           TYPEORM_DATABASE: $TYPEORM_DATABASE
           TYPEORM_PORT: $TYPEORM_PORT
-          TYPEORM_ENTITIES: $TYPEORM_ENTITIES     
+          TYPEORM_ENTITIES: $TYPEORM_ENTITIES
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints: ["92:1e:14:c0:a8:ab:71:35:5d:10:19:1c:c7:eb:0d:ab"]
-      - attach_workspace: 
+      - attach_workspace:
           at: ~/
       - restore_cache:
           keys:
@@ -312,7 +310,7 @@ jobs:
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/deploy-backend.yml
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-      
+
       # Here's where you will add some code to rollback on failure
 
   smoke-test:
@@ -351,8 +349,8 @@ jobs:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-  
- cloudfront-update:
+
+  cloudfront-update:
     docker:
       - image: cimg/base:2021.04
     steps:
@@ -366,7 +364,7 @@ jobs:
             --no-paginate --output text)
             curl https://kvdb.io/GiteJPLYzzYJHG2ciTFivz//migration_${CIRCLE_WORKFLOW_ID:0:7} \
             -H "X-Api-Key: ${THISDB_API_KEY}" \
-            -d "$OldWorkflowID"  
+            -d "$OldWorkflowID"
       - run:
           name: Updating cloudfront distribution
           command: |
@@ -376,7 +374,7 @@ jobs:
             --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
             --tags project=udapeople
 
- cleanup:
+  cleanup:
     docker:
       - image: amazon/aws-cli
     steps:
