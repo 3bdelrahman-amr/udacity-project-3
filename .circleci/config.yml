@@ -88,13 +88,13 @@ jobs:
       # Checkout code from git
       # Restore from cache
       # Your job code here
-      - checkout
-      - restore_cache:
-          keys: [frontend-build] 
-      -run:
-        name: test-frontend
-        working_directory: ./frontend
-        command: |
+    - checkout
+    - restore_cache:
+        keys: [frontend-build] 
+    -run:
+      name: test-frontend
+       working_directory: ./frontend
+       command: |
          npm i
          npm run test
 
