@@ -198,7 +198,7 @@ jobs:
       # Add ssh keys with fingerprint
       # attach workspace
       - checkout
-      -add_ssh_keys:
+      - add_ssh_keys:
         fingerprints: ["92:1e:14:c0:a8:ab:71:35:5d:10:19:1c:c7:eb:0d:ab"]
       - attach_workspace:
           at: ~/
@@ -210,7 +210,7 @@ jobs:
             apk add --update ansible
             apk add openssh-client
             pip3 install awscli
-        - run:
+      - run:
           name: Configure server
           command: |
             cat ~/project/.circleci/ansible/inventory.txt
@@ -288,7 +288,7 @@ jobs:
           TYPEORM_PORT: $TYPEORM_PORT
           TYPEORM_ENTITIES: $TYPEORM_ENTITIES     
     steps:
-     - checkout
+      - checkout
       - add_ssh_keys:
           fingerprints: ["92:1e:14:c0:a8:ab:71:35:5d:10:19:1c:c7:eb:0d:ab"]
       - attach_workspace: 
