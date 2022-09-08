@@ -91,8 +91,8 @@ jobs:
     - checkout
     - restore_cache:
         keys: [frontend-build] 
-    -run:
-      name: test-frontend
+    - run:
+       name: test-frontend
        working_directory: ./frontend
        command: |
          npm i
