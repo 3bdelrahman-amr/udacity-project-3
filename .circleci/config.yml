@@ -299,7 +299,7 @@ jobs:
 
   deploy-backend:
     docker:
-      - image: cimag/base:stable
+      - image: cimg/base:stable
         environment:
           NODE_ENV: "production"
           VERSION: "1"
