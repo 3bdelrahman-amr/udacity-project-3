@@ -1,13 +1,4 @@
 ---
-- name: "update apt"
-  become: true
-  apt:
-    update_cache: yes
-
-- name: "upgrade apt packages"
-  become: true
-  apt:
-    upgrade: "yes"
 - name: "add node.js from nodesource"
   become: yes
   shell: |
@@ -18,19 +9,6 @@
   become: true
   apt:
     name: ["nodejs"]
-    state: latest
-    update_cache: yes
-- name: "install n"
-  become: yes
-  npm:
-    name: n
-    global: yes
-    production: yes
-
-- name: "install dependencies."
-  become: true
-  apt:
-    name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
 
