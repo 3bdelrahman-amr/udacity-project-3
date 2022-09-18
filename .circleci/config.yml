@@ -300,7 +300,7 @@ jobs:
 
   deploy-backend:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/node:13.14.0
         environment:
           NODE_ENV: "production"
           VERSION: "1"
