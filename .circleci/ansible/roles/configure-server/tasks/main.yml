@@ -1,0 +1,26 @@
+---
+- name: "add node.js from nodesource"
+  become: yes
+  shell: |
+    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+
+- name: "install node.js 13"
+  become: true
+  apt:
+    name: ["nodejs"]
+    state: latest
+    update_cache: yed
+
+- name: "install dependencies."
+  become: true
+  apt:
+    name: ["nodejs", "npm"]
+    state: latest
+    update_cache: yes
+
+- name: "install pm2 globally"
+  become: true
+  npm:
+    name: pm2
+    global: yes
