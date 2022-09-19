@@ -343,7 +343,7 @@ jobs:
             export TYPEORM_MIGRATIONS=./migrations/*.ts
             cd .circleci/ansible
             cat inventory.txt
-            TYPEORM_ENTITIES=./modules/domain/*/.entity{.ts, .js}
+            TYPEORM_ENTITIES=./modules/domain/*/.entity{.ts,.js}
             ansible-playbook -i inventory.txt deploy-backend.yml
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
