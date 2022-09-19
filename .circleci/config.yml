@@ -222,7 +222,7 @@ jobs:
       # attach workspace
       - checkout
       - add_ssh_keys:
-          fingerprints: ["7c0:95:d3:3f:4d:46:4b:92:28:8d:fd:d0:e5:8e:33:4d"]
+          fingerprints: ["c0:95:d3:3f:4d:46:4b:92:28:8d:fd:d0:e5:8e:33:4d"]
       - attach_workspace:
           at: ~/
       - run:
