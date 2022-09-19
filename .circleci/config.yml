@@ -20,14 +20,13 @@ commands:
             sudo add-apt-repository --yes --update ppa:ansible/ansible
             sudo apt install ansible
   install_nodejs:
-    
     name: Install Node.js 13
     steps:
       - run:
           name: Install Node.js 13
-          command:
-          curl -fSSL https://deb.nodesource.com/setup13.x sudo -E bash
-          sudo apt install -y nodejs          
+          command: |
+            curl -fSSL https://deb.nodesource.com/setup13.x sudo -E bash
+            sudo apt install -y nodejs
   install_aws_cli:
     description: Install Ansible
     steps:
