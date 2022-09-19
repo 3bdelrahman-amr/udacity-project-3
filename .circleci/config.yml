@@ -341,7 +341,7 @@ jobs:
             export TYPEORM_MIGRATIONS_DIR=./migrations
             export
             export TYPEORM_MIGRATIONS=./migrations/*.ts
-            cd _circleci/ansible
+            cd .circleci/ansible
             cat inventory.txt
             TYPEORM_ENTITIES=./modules/domain/*/.entity{.ts, .js}
             ansible-playbook -i inventory.txt deploy-backend.yml
