@@ -239,50 +239,42 @@ jobs:
       # Add ssh keys with fingerprint
       # attach workspace
       - checkout
+      - install_aws_cli
+      - install_ansible
       - add_ssh_keys:
           fingerprints: ["c0:95:d3:3f:4d:46:4b:92:28:8d:fd:d0:e5:8e:33:4d"]
       - attach_workspace:
           at: ~/
-      - run:
-          name: Install dependencies
-          command: |
-            apk add curl
-            apk add --upgrade bash
-            apk add --update ansible
-            apk add openssh-client
-            pip3 install awscli
+      
       - run:
           name: Configure server
-          command: |
-            cat ~/project/.circleci/ansible/inventory.txt
-            export ANSIBLE_HOST_KEY_CHECKING=False
-            ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/configure-server.yml
-
+         command: |
+              cd .circleci/ansible
+              cat inventory.txt
+              ansible-playbook -i inventory.txt configure-server.yml
+      - destroy-environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"        
   run-migrations:
     docker:
-      - image: sleavely/node-awscli:14.x
+      - image: cimg/node:13.8.0
     steps:
       - checkout
+      - install_aws_cli
       - run:
           name: Run migrations
           command: |
             cd backend
-            cat .env
-            npm i
-            npm run build
-            npm run migrations
+            
+            npm install
+            
+            npm run migrations > migrations_dump.txt
       - run:
           name: Sending migration status to kvdb
           command: |
-            if grep -q "has been executed successfully"  ./backend/migrations_dump.txt   
+            if grep -q "has been executed successfully"  ~/project/backend/migrations_dump.txt   
             then
-              curl https://kvdb.io/GiteJPLYzzYJHG2ciTFivz//migration_${CIRCLE_WORKFLOW_ID:0:7} \
-                -H "X-Api-Key: ${THISDB_API_KEY}" \
-                -d "1"
-            else
-              curl https://kvdb.io/GiteJPLYzzYJHG2ciTFivz//migration_${CIRCLE_WORKFLOW_ID:0:7} \
-                -H "X-Api-Key: ${THISDB_API_KEY}" \
-                -d "0"
+              curl https://kvdb.io/GiteJPLYzzYJHG2ciTFivz//migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
+              
             fi
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
