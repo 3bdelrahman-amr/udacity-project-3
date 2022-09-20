@@ -245,15 +245,15 @@ jobs:
           fingerprints: ["c0:95:d3:3f:4d:46:4b:92:28:8d:fd:d0:e5:8e:33:4d"]
       - attach_workspace:
           at: ~/
-      
+
       - run:
           name: Configure server
-         command: |
-              cd .circleci/ansible
-              cat inventory.txt
-              ansible-playbook -i inventory.txt configure-server.yml
+          command: |
+            cd .circleci/ansible
+            cat inventory.txt
+            ansible-playbook -i inventory.txt configure-server.yml
       - destroy-environment:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"        
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
   run-migrations:
     docker:
       - image: cimg/node:13.8.0
@@ -264,9 +264,9 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            
+
             npm install
-            
+
             npm run migrations > migrations_dump.txt
       - run:
           name: Sending migration status to kvdb
