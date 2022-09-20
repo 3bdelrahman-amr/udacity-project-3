@@ -135,9 +135,10 @@ jobs:
           keys: [frontend-build]
       - run:
           name: test-frontend
-          working_directory: ./frontend
+
           command: |
-            npm i
+            cd frontend
+            npm install
             npm run test
 
   test-backend:
@@ -149,8 +150,9 @@ jobs:
           keys: [backend-build]
       - run:
           name: test-backend
-          working_directory: ./backend
+
           command: |
+            cd backend
             npm i
             npm run test
 
