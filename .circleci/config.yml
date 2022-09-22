@@ -73,7 +73,7 @@ commands:
           command: |
             SUCCESS=$(curl "https://kvdb.io/GiteJPLYzzYJHG2ciTFivz/migration_<<parameters.workflow_id>>")
             if (($SUCCESS == 1)); then
-              cd backend
+              cd ~/project/backend
               npm install
               npm run migrations:revert
             fi
