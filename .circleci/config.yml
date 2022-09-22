@@ -71,7 +71,7 @@ commands:
           name: Reverting migrations
           when: on_fail
           command: |
-            SUCCESS=$(curl "https://kvdb.io/GiteJPLYzzYJHG2ciTFivz//migration_<<parameters.workflow_id>>" -H "X-Api-Key: ${THISDB_API_KEY}")
+            SUCCESS=$(curl "https://kvdb.io/GiteJPLYzzYJHG2ciTFivz/migration_<<parameters.workflow_id>>")
             if (($SUCCESS == 1)); then
               cd backend
               npm install
@@ -279,7 +279,7 @@ jobs:
               curl https://kvdb.io/GiteJPLYzzYJHG2ciTFivz/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
               
             fi
-      # Here's where you will add some code to rollback on failure
+      
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
@@ -368,34 +368,36 @@ jobs:
 
   smoke-test:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: cimg/base:stable
     steps:
       - checkout
-      - attach_workspace:
-          at: /root
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update curl
-            pip install awscli
+      - install_aws_cli
+      - install_nodejs
+      
+      
       - run:
           name: Backend smoke test.
           command: |
-            ls 
-            pwd
-            export backend_url=$(curl -H "token: ecdfc255-81e1-4056-9efa-2d7fa10812e1" \
-            --request GET https://api.memstash.io/values/backend_url)
-            echo $backend_url
-            # curl "$backend_url/api/status"
+             BACKEND_IP=$(aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --output text )
+            export API_URL=http://${BACKEND_IP}:3030
+            if curl -s $API_URL/api/status | grep "ok"
+            then 
+              exit 0
+            else 
+              exit 1
+            fi 
       - run:
           name: Frontend smoke test.
           command: |
             URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com"
             if curl -s ${URL} | grep "Welcome"
             then
-              return 0
-            else
               return 1
+            else
+              return 2
             fi
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
