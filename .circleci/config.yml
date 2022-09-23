@@ -132,7 +132,7 @@ jobs:
       # Your job code here
       - checkout
       - restore_cache:
-          keys: [frontend-build]
+          keys: [build-frontend]
       - run:
           name: test-frontend
 
@@ -147,7 +147,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [build-backend]
       - run:
           name: test-backend
 
@@ -162,7 +162,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build]
+          keys: [build-frontend]
       - run:
           name: Front-end scan
           working_directory: ./frontend
@@ -176,7 +176,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [build-backend]
       - run:
           name: Back-end scan
           working_directory: ./backend
