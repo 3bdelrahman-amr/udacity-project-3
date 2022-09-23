@@ -168,7 +168,7 @@ jobs:
           working_directory: ./frontend
           command: |
             npm i
-            npm audit fix
+            npm audit fix --audit-level=critical
 
   scan-backend:
     docker:
@@ -182,7 +182,7 @@ jobs:
           working_directory: ./backend
           command: |
             npm i
-            npm audit fix
+            npm audit fix --audit-level=critical
   deploy-infrastructure:
     docker:
       - image: cimg/base:2021.04
