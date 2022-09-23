@@ -182,7 +182,7 @@ jobs:
           working_directory: ./backend
           command: |
             npm i
-            npm audit fix --audit-level=critical
+            npm audit
   deploy-infrastructure:
     docker:
       - image: cimg/base:2021.04
